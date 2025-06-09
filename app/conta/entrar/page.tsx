@@ -14,6 +14,7 @@ export default function Home() {
   return (
     <div className="min-w-dvh min-h-dvh flex justify-center items-center">
       <Button
+        variant="outline"
         onClick={() => signIn('github', {redirectTo: '/conta/entrou'})}
       >
         <SiGithub /> Entrar com o Github 
