@@ -9,7 +9,7 @@ interface AuthFooterProps {
 
 export function AuthFooter({ auth_type }: AuthFooterProps) {
   return (
-    <CardFooter className="w-full flex justify-center pt-2">
+    <CardFooter className="w-full flex justify-center pt-2 text-sm text-muted-foreground">
       {
         auth_type === "login" ? (
           <Link href="/conta/criar" className="group/linkCriacao">
