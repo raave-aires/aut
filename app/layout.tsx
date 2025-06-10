@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 
-import { Geist, Geist_Mono } from "next/font/google";
+import { Averia_Serif_Libre, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+
+const averia = Averia_Serif_Libre({
+  weight: "400",
+  style: "normal",
+  variable: "--font-averia",
+  subsets: ["latin"],
+  display: "swap",
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${averia.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider
           attribute="class"
