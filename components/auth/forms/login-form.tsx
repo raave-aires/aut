@@ -23,7 +23,7 @@ import { Loader } from "@/components/auth/loader";
 import { EyeIcon, EyeClosedIcon } from "lucide-react";
 
 // esquema do zod:
-const infos_do_login = z.object({
+const loginInfos = z.object({
   email: z.string().email({
     message: "O e-mail digitado não é válido",
   }),
@@ -33,8 +33,8 @@ const infos_do_login = z.object({
 export function LoginForm() {
   const [loading, setLoading] = useState(false);
   
-  const form = useForm<z.infer<typeof infos_do_login>>({
-    resolver: zodResolver(infos_do_login),
+  const form = useForm<z.infer<typeof loginInfos>>({
+    resolver: zodResolver(loginInfos),
     defaultValues: {
       email: "",
       password: "",
@@ -45,7 +45,7 @@ export function LoginForm() {
   const [showPass, setShowPass] = useState<boolean>(false);
   const disableShowPassButton = pass === "" || pass === undefined;
 
-  async function onSubmit(values: z.infer<typeof infos_do_login>) {
+  async function onSubmit(values: z.infer<typeof loginInfos>) {
     setLoading(true);
     try {
       // simula o login (troca pelo teu request real)
@@ -73,6 +73,7 @@ export function LoginForm() {
                 <Input
                   placeholder="você@alguma-coisa.com"
                   className="w-88"
+                  autoComplete="email username"
                   {...field}
                 />
               </FormControl>
