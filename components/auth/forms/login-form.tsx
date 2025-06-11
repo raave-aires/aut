@@ -143,4 +143,4 @@ export function LoginForm() {
       </form>
     </Form>
   );
-}
+};
