@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useActionState } from "react";
+import React, { useState, useActionState, startTransition } from "react";
+import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -37,7 +38,7 @@ const registerInfos = z.object({
 });
 
 export function RegisterForm() {
-  const [loading, setLoading] = useState(false);
+  const [ state, formAction, isPending ] = useActionState(registerAction, null)
 
   const form = useForm<z.infer<typeof registerInfos>>({
     resolver: zodResolver(registerInfos),
@@ -54,20 +55,16 @@ export function RegisterForm() {
   const disableShowPassButton = pass === "" || pass === undefined;
 
   async function onSubmit(values: z.infer<typeof registerInfos>) {
-  setLoading(true);
-  try {
-    const res = await registerAction(null, values);
-    console.log(res);
-  } finally {
-    setLoading(false);
+    try {
+      startTransition(() => { formAction(values) });
+    } finally {
+      redirect("/conta/criou");
+    }
   }
-}
 
   return (
     <>
-      <div>
-        <p></p>
-      </div>
+      { state?.success === true ? <p>{state?.message}</p> : null }
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -171,9 +168,9 @@ export function RegisterForm() {
           <Button 
             className="text-white"
             type="submit" 
-            disabled={loading}
+            disabled={isPending}
           >
-            { loading ? (
+            { isPending ? (
               <Loader />
             ) : "Criar" }
           </Button>
