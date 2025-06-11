@@ -81,3 +81,8 @@
 //     </div>
 //   );
 // }
+
+
+export default function Page() {
+  return <p>Foi</p>
+};
