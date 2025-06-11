@@ -41,6 +41,6 @@ export default async function registerAction(
 
   return {
     message: "Usuário criado com sucesso.",
-    sucess: false
+    success: true
   }
 }
