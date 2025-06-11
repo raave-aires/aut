@@ -11,36 +11,46 @@ export default async function registerAction(
     email: string;
     password: string;
   }
-) {
+){
   console.log("##### A ação está rodando #####");
   console.log(data);
 
-  // verifica se já existe um usuário com o mesmo e-mail:
-  const user = await db.user.findUnique({
-    where: {
-      email: data.email,
-    },
-  });
+  try {
+    // 1º passo: validação dos dados recebidos:
+    // um esquema do zod já foi definido no componente RegisterForm.tsx, validando os dados antes de chegar aqui e garantindo que os dados estejam completos e corretos.
 
-  if(user) {
+    // 2º passo: verifica se já existe um usuário com o mesmo e-mail:
+    const user = await db.user.findUnique({
+      where: { email: data.email },
+    });
+    
+    if (user) {
+      return {
+        success: false,
+        message: "Este e-mail já está cadastrado. Tente outro ou faça login.",
+      };
+    }
+
+    // se não existir, continua o processo de registro:
+    // 3º passo: cria o usuário no banco de dados:
+     await db.user.create({
+      data: {
+        name: data.name,
+        lastname: data.lastname,
+        email: data.email,
+        password: hashSync(data.password),
+      },
+    });
+
     return {
-      message: "Este e-mail já está sendo utilizado.",
-      success: false
-    }
-  }
-
-  // após a validação de que não existe um usuário já registrada, seguimos para criação do usuário:
-  await db.user.create({
-    data: {
-      name: data.name,
-      lastname: data.lastname,
-      email: data.email,
-      password: hashSync(data.password)
-    }
-  });
-
-  return {
-    message: "Usuário criado com sucesso.",
-    success: true
+      success: true,
+    };
+  } catch (error) {
+    console.error("Erro em registerAction: ", error);
+    
+    return {
+      success: false,
+      message: "Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.",
+    };
   }
 }
