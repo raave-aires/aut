@@ -24,9 +24,9 @@ import { EyeIcon, EyeClosedIcon } from "lucide-react";
 
 // esquema do zod:
 const loginInfos = z.object({
-  email: z.string().email({
-    message: "O e-mail digitado não é válido",
-  }),
+  email: z.string()
+  .min(1, { message: "Precisamos de um e-mail ou nome de usuário" })
+  .email({ message: "O e-mail digitado não é válido"}),
   password: z.string(),
 });
 
@@ -72,7 +72,6 @@ export function LoginForm() {
               <FormControl>
                 <Input
                   placeholder="você@alguma-coisa.com"
-                  className="w-88"
                   autoComplete="email username"
                   {...field}
                 />
@@ -103,7 +102,7 @@ export function LoginForm() {
                 <div className="flex">
                   <Input
                     type={ showPass ? "text" : "password" }
-                    placeholder="****"
+                    placeholder="**********"
                     autoComplete="password"
                     className="rounded-r-none"
                     {...field}
