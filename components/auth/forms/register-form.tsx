@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useActionState, startTransition } from "react";
-import { redirect } from "next/navigation";
+import React, { useState, useActionState, startTransition, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,8 +20,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/auth/loader";
 
-// ícones: 
-import { EyeIcon, EyeClosedIcon, AlertCircleIcon } from "lucide-react";
+// ícones:
+import { Check, EyeIcon, EyeClosedIcon, AlertCircleIcon } from "lucide-react";
 
 // funções:
 import registerAction from "@/lib/registerAction";
@@ -34,12 +34,15 @@ const registerInfos = z.object({
     .string()
     .min(1, { message: "Precisamos de um e-mail para entrar em contato" })
     .email({ message: "O e-mail digitado não é válido" }),
-  password: z.string()
-    .min(1, { message: "Sua senha precisa ter ao menos 10 caracteres"}),
+  password: z
+    .string()
+    .min(1, { message: "Sua senha precisa ter ao menos 10 caracteres" }),
 });
 
 export function RegisterForm() {
-  const [ state, formAction, isPending ] = useActionState(registerAction, null)
+  const [state, formAction, isPending] = useActionState(registerAction, null);
+  const [showCheck, setShowCheck] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof registerInfos>>({
     resolver: zodResolver(registerInfos),
@@ -56,14 +59,18 @@ export function RegisterForm() {
   const disableShowPassButton = pass === "" || pass === undefined;
 
   async function onSubmit(values: z.infer<typeof registerInfos>) {
-    try {
-      startTransition(() => { formAction(values) });
-    } finally {
-      if (state?.success) {
-        redirect("/conta/criou");
-      } else return;
+    startTransition(() => {
+      formAction(values);
+    });
+  };
+
+  // dispara redirecionamento quando o state.success virar true
+  useEffect(() => {
+    if (state?.success) {
+      setShowCheck(true);
+      setTimeout(() => router.push("/conta/criou"), 1000);
     }
-  }
+  }, [state?.success, router]);
 
   return (
     <>
@@ -80,10 +87,7 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel>Nome </FormLabel>
                   <FormControl>
-                    <Input
-                      autoComplete="given-name"
-                      {...field}
-                    />
+                    <Input autoComplete="given-name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -97,10 +101,7 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel>Sobrenome</FormLabel>
                   <FormControl>
-                    <Input
-                      autoComplete="family-name"
-                      {...field}
-                    />
+                    <Input autoComplete="family-name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -131,14 +132,12 @@ export function RegisterForm() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Senha
-                </FormLabel>
+                <FormLabel>Senha</FormLabel>
 
                 <FormControl>
                   <div className="flex">
                     <Input
-                      type={ showPass ? "text" : "password" }
+                      type={showPass ? "text" : "password"}
                       placeholder="**********"
                       autoComplete="new-password"
                       className="rounded-r-none"
@@ -151,13 +150,13 @@ export function RegisterForm() {
                       onClick={() => setShowPass((prev) => !prev)}
                       disabled={disableShowPassButton}
                     >
-                      { showPass && !disableShowPassButton ? (
+                      {showPass && !disableShowPassButton ? (
                         <EyeIcon className="h-4 w-4" aria-hidden="true" />
                       ) : (
                         <EyeClosedIcon className="h-4 w-4" aria-hidden="true" />
                       )}
                       <span className="sr-only">
-                        { showPass ? "Esconder senha" : "Mostrar senha"}
+                        {showPass ? "Esconder senha" : "Mostrar senha"}
                       </span>
                     </Button>
                   </div>
@@ -166,24 +165,29 @@ export function RegisterForm() {
               </FormItem>
             )}
           />
-          <Alert variant="destructive">
-            <AlertCircleIcon />
-            <AlertTitle>Ops! Algo deu errado.</AlertTitle>
-            <AlertDescription>
-              <ul className="list-inside list-disc text-sm">
-                <li>{ state?.message ?? "e" } </li>
-              </ul>
-            </AlertDescription>
-          </Alert>
 
-          <Button 
+          { state?.success === false ? (
+            <Alert variant="destructive">
+              <AlertCircleIcon />
+              <AlertTitle className="text-sm">Ops! Algo deu errado.</AlertTitle>
+              <AlertDescription>
+                <p className="text-xs">{state?.message ?? "Tente novamente mais tarde."}</p>
+              </AlertDescription>
+            </Alert>
+          ) : null }
+
+          <Button
             className="text-white"
-            type="submit" 
+            type="submit"
             disabled={isPending}
           >
-            { isPending ? (
+            {isPending ? (
               <Loader />
-            ) : "Criar" }
+            ) : showCheck ? (
+              <Check size={4} />
+            ) : (
+              "Criar"
+            )}
           </Button>
         </form>
       </Form>
