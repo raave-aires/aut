@@ -16,7 +16,6 @@ export default function Home() {
           <AuthButtons />
 
           <LoginForm />
-          <PasskeyLoginButton />
         </CardContent>
 
         <AuthFooter auth_type="login" />
