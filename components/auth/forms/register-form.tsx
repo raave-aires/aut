@@ -1,6 +1,11 @@
 "use client";
 
-import React, { useState, useActionState, startTransition, useEffect } from "react";
+import React, {
+  useState,
+  useActionState,
+  startTransition,
+  useEffect,
+} from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -40,9 +45,16 @@ const registerInfos = z.object({
 });
 
 export function RegisterForm() {
+  const router = useRouter();
+
   const [state, formAction, isPending] = useActionState(registerAction, null);
   const [showCheck, setShowCheck] = useState(false);
-  const router = useRouter();
+  const [showErrorFlash, setShowErrorFlash] = useState(false);
+
+  // escolhe a classe de cor do botão
+  const buttonColorClass = showCheck ? "bg-green-500"
+    : showErrorFlash ? "bg-red-500 hover:bg-red-600"
+    : null;
 
   const form = useForm<z.infer<typeof registerInfos>>({
     resolver: zodResolver(registerInfos),
@@ -62,13 +74,17 @@ export function RegisterForm() {
     startTransition(() => {
       formAction(values);
     });
-  };
+  }
 
   // dispara redirecionamento quando o state.success virar true
+  // quando state.success mudar, dispara o flash
   useEffect(() => {
     if (state?.success) {
       setShowCheck(true);
       setTimeout(() => router.push("/conta/criou"), 1000);
+    } else if (state?.success === false) {
+      setShowErrorFlash(true);
+      setTimeout(() => setShowErrorFlash(false), 2000);
     }
   }, [state?.success, router]);
 
@@ -166,28 +182,25 @@ export function RegisterForm() {
             )}
           />
 
-          { state?.success === false ? (
+          {state?.success === false ? (
             <Alert variant="destructive">
               <AlertCircleIcon />
               <AlertTitle className="text-sm">Ops! Algo deu errado.</AlertTitle>
               <AlertDescription>
-                <p className="text-xs">{state?.message ?? "Tente novamente mais tarde."}</p>
+                <p className="text-xs">
+                  {state?.message ?? "Tente novamente mais tarde."}
+                </p>
               </AlertDescription>
             </Alert>
-          ) : null }
+          ) : state?.success === undefined ? null 
+            : null }
 
           <Button
-            className="text-white"
             type="submit"
+            className={`text-white ${buttonColorClass}`}
             disabled={isPending}
           >
-            {isPending ? (
-              <Loader />
-            ) : showCheck ? (
-              <Check size={4} />
-            ) : (
-              "Criar"
-            )}
+            { isPending ? <Loader /> : showCheck ? <Check size={16} /> : "Criar" }
           </Button>
         </form>
       </Form>
