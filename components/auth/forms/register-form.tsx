@@ -7,6 +7,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 // componentes:
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -20,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/auth/loader";
 
 // ícones: 
-import { EyeIcon, EyeClosedIcon } from "lucide-react";
+import { EyeIcon, EyeClosedIcon, AlertCircleIcon } from "lucide-react";
 
 // funções:
 import registerAction from "@/lib/registerAction";
@@ -34,7 +35,7 @@ const registerInfos = z.object({
     .min(1, { message: "Precisamos de um e-mail para entrar em contato" })
     .email({ message: "O e-mail digitado não é válido" }),
   password: z.string()
-    .min(10, { message: "Sua senha precisa ter ao menos 10 caracteres"}),
+    .min(1, { message: "Sua senha precisa ter ao menos 10 caracteres"}),
 });
 
 export function RegisterForm() {
@@ -58,13 +59,14 @@ export function RegisterForm() {
     try {
       startTransition(() => { formAction(values) });
     } finally {
-      redirect("/conta/criou");
+      if (state?.success) {
+        redirect("/conta/criou");
+      } else return;
     }
   }
 
   return (
     <>
-      { state?.success === true ? <p>{state?.message}</p> : null }
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -164,6 +166,15 @@ export function RegisterForm() {
               </FormItem>
             )}
           />
+          <Alert variant="destructive">
+            <AlertCircleIcon />
+            <AlertTitle>Ops! Algo deu errado.</AlertTitle>
+            <AlertDescription>
+              <ul className="list-inside list-disc text-sm">
+                <li>{ state?.message ?? "e" } </li>
+              </ul>
+            </AlertDescription>
+          </Alert>
 
           <Button 
             className="text-white"
