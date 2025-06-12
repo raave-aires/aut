@@ -52,8 +52,10 @@ export function RegisterForm() {
   const [showErrorFlash, setShowErrorFlash] = useState(false);
 
   // escolhe a classe de cor do botão
-  const buttonColorClass = showCheck ? "bg-green-500"
-    : showErrorFlash ? "bg-red-500 hover:bg-red-600"
+  const buttonColorClass = showCheck
+    ? "bg-green-500"
+    : showErrorFlash
+    ? "bg-red-500 hover:bg-red-600"
     : null;
 
   const form = useForm<z.infer<typeof registerInfos>>({
@@ -192,15 +194,14 @@ export function RegisterForm() {
                 </p>
               </AlertDescription>
             </Alert>
-          ) : state?.success === undefined ? null 
-            : null }
+          ) : state?.success === undefined ? null : null}
 
           <Button
             type="submit"
             className={`text-white ${buttonColorClass}`}
             disabled={isPending}
           >
-            { isPending ? <Loader /> : showCheck ? <Check size={16} /> : "Criar" }
+            {isPending ? <Loader /> : showCheck ? <Check size={16} /> : "Criar"}
           </Button>
         </form>
       </Form>
