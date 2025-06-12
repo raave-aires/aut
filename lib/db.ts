@@ -1,5 +1,4 @@
 // instância do banco de dados
-
 import { PrismaClient } from "@prisma/client";
 
 declare global {
