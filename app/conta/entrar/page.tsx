@@ -1,10 +1,9 @@
 // componentes:
 import { CardContent } from "@/components/ui/card";
 import { AuthHeader } from "@/components/auth/auth-header";
-import { AuthButtons } from "@/components/auth/auth-buttons";
+import { AuthButtons } from "@/components/auth/oauth-buttons-render";
 import { LoginForm } from "@/components/auth/forms/login-form";
 import { AuthFooter } from "@/components/auth/auth-footer";
-import { SessionBanner } from "@/components/auth/session";
 
 export default function Page() {
   return (
@@ -14,7 +13,6 @@ export default function Page() {
       <CardContent>
         <AuthButtons />
         <LoginForm />
-        <SessionBanner />
       </CardContent>
 
       <AuthFooter auth_type="login" />
