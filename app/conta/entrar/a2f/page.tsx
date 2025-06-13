@@ -1,5 +1,6 @@
 import { PasskeyLoginButton } from "@/components/auth/buttons/passkey-login-button";
 import { TwofaForm } from "@/components/auth/forms/2fa-form";
+import { Or } from "@/components/auth/or";
 import {
   CardContent,
   CardDescription,
@@ -22,6 +23,8 @@ export default function TwofaPage() {
 
       <CardContent>
         <TwofaForm />
+       <Or />
+       <PasskeyLoginButton />
       </CardContent>
     </>
   );
