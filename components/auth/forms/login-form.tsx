@@ -76,7 +76,7 @@ export function LoginForm() {
   useEffect(() => {
     if (state?.success) {
       setShowCheck(true);
-      setTimeout(()=> console.log(""), 1000);
+      setTimeout(()=> router.push("/conta/entrou"), 1000);
     } else if (state?.success === false) {
       setShowErrorFlash(true);
       setTimeout(() => setShowErrorFlash(false), 2000);
