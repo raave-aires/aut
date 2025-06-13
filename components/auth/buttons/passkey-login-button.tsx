@@ -1,7 +1,6 @@
 "use client"
 
 // dependências:
-import { useSession } from "next-auth/react"
 import { signIn } from "next-auth/webauthn"
 
 // componentes:
@@ -18,6 +17,8 @@ export async function PasskeyLoginButton() {
    <>
     { session !== null ? (
         <Button
+          variant="outline"
+          className="cursor-pointer"
           onClick={() => signIn("passkey", { action: "register" })}
         >
           <Key /> Registrar chave de acesso
