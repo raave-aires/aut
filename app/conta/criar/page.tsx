@@ -1,7 +1,7 @@
 // componentes:
 import { CardContent } from "@/components/ui/card";
 import { AuthHeader } from "@/components/auth/auth-header";
-import { AuthButtons } from "@/components/auth/auth-buttons";
+import { AuthButtons } from "@/components/auth/oauth-buttons-render";
 import { RegisterForm } from "@/components/auth/forms/register-form";
 import { AuthFooter } from "@/components/auth/auth-footer";
 
