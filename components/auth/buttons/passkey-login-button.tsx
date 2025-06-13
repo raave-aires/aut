@@ -9,19 +9,20 @@ import { Button } from "@/components/ui/button";
 
 // ícones:
 import { Key } from "lucide-react";
+import { auth } from "@/auth";
 
-export function PasskeyLoginButton() {
-  const { data: session, update, status } = useSession()
+export async function PasskeyLoginButton() {
+  const session = await auth()
 
   return(
    <>
-    { status === "authenticated" ? (
+    { session !== null ? (
         <Button
           onClick={() => signIn("passkey", { action: "register" })}
         >
           <Key /> Registrar chave de acesso
         </Button>
-      ) : status === "unauthenticated" ? (
+      ) : session === null ? (
         <Button
           onClick={() => signIn("passkey")}
         >
