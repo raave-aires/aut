@@ -7,7 +7,7 @@ export default function Layout({
 }) {
   return (
     <main className="min-w-dvw min-h-dvh flex justify-center items-center">
-      <Card className="w-md">
+      <Card className="max-w-[27rem] min-w-[24rem]">
         {children}
       </Card>
     </main>
